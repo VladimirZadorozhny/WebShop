@@ -1,0 +1,1 @@
+insert into prodgroups (groupname) values ('testgroup1');
