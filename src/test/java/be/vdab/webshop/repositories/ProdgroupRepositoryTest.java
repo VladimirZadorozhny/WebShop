@@ -2,6 +2,7 @@ package be.vdab.webshop.repositories;
 
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,6 +19,7 @@ class ProdgroupRepositoryTest {
     private final  ProdgroupRepository repository;
     private final JdbcClient jdbcClient;
 
+    @Autowired
     public ProdgroupRepositoryTest(ProdgroupRepository repository, JdbcClient jdbcClient) {
         this.repository = repository;
         this.jdbcClient = jdbcClient;
