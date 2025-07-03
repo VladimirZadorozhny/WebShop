@@ -22,7 +22,7 @@ class ProductRepositoryTest {
     private final ProductRepository repository;
     private final JdbcClient jdbcClient;
 
-    @Autowired
+
     public ProductRepositoryTest(ProductRepository repository, JdbcClient jdbcClient) {
         this.repository = repository;
         this.jdbcClient = jdbcClient;

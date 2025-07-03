@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,17 +15,16 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
+
 @DataJpaTest
+@ImportAutoConfiguration(JdbcClientAutoConfiguration.class)
 @Sql("/prodgroups.sql")
 class ProdgroupRepositoryTest {
     private static final String PRODGROUPS_TABLE = "prodgroups";
-    @Autowired
     private final  ProdgroupRepository repository;
-    @Autowired
     private final JdbcClient jdbcClient;
 
-    @Autowired
+
     public ProdgroupRepositoryTest(ProdgroupRepository repository, JdbcClient jdbcClient) {
         this.repository = repository;
         this.jdbcClient = jdbcClient;
