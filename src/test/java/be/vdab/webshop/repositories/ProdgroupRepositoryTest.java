@@ -22,8 +22,28 @@ class ProdgroupRepositoryTest {
         this.jdbcClient = jdbcClient;
     }
 
-@Test
+    private long idOfTestProdgroup1() {
+        return jdbcClient.sql("select id from prodgroups where groupname = 'testgroup1'")
+                .query(Long.class).single();
+    }
+
+    @Test
     public void testThatFindAllGroupsReturnsAllGroups() {
         assertThat(repository.findAll().size()).isEqualTo(JdbcTestUtils.countRowsInTable(jdbcClient, PRODGROUPS_TABLE));
-}
+    }
+
+    @Test
+    public void testThatFindGroupByIdExistingGroupReturnsGroup() {
+        var group = repository.findById(idOfTestProdgroup1());
+        assertThat(group).isNotNull();
+        assertThat(group).isNotEmpty();
+        assertThat(group).hasValueSatisfying(prodgroup -> assertThat(prodgroup.getGroupname()).isEqualTo("testgroup1"));
+    }
+
+    @Test
+    public void testThatFindGroupByIdNonExistingGroupReturnsNull() {
+        final var group = repository.findById(Long.MAX_VALUE);
+        assertThat(group).isEmpty();
+    }
+
 }
