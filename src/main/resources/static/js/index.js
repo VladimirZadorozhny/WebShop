@@ -54,9 +54,10 @@ async function showProducts(groupId, groupName) {
             link.href = "product.html";
             link.appendChild(img);
             productsList.appendChild(link);
-            link.onclick = () => sessionStorage.setItem("productId", product.id);
+            link.onclick = () => sessionStorage.setItem("productInfo", JSON.stringify({
+                "productId" : product.id,
+                "groupName" : groupName}));
         }
-
 
     } else {
         alert(response.text);

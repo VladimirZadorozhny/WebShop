@@ -35,10 +35,11 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(withDefaults());
         http.authorizeHttpRequests(req ->
-                req.requestMatchers("/css/**", "/js/**", "/images/**", "/", "/index.html", "/principal/**", "/prodgroups/**")
-                        .permitAll()
+                req.requestMatchers("/css/**", "/js/**", "/images/**", "/", "/index.html", "/product.html", "shopcart.html").permitAll()
+                        .requestMatchers("/principal/**", "/prodgroups/**", "/products/**").permitAll()
                         .requestMatchers("/login.html")
-                        .hasAnyAuthority("admin"));
+                        .hasAuthority("admin")
+                        .anyRequest().authenticated());
         return http.build();
     }
 }

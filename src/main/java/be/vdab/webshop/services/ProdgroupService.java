@@ -5,11 +5,13 @@ import be.vdab.webshop.domain.dto.GroupOnlyIdName;
 import be.vdab.webshop.domain.entities.Prodgroup;
 import be.vdab.webshop.repositories.ProdgroupRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProdgroupService {
 
     private final ProdgroupRepository prodgroupRepository;
