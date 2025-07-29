@@ -2,7 +2,7 @@ package be.vdab.webshop.repositories;
 
 import be.vdab.webshop.domain.entities.Product;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.jdbc.Sql;
@@ -34,7 +34,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    public void testThatProductCanBeFounded() {
+    public void testThatExistingProductCanBeFounded() {
         Optional<Product> testProduct = repository.findById(idOfTestProduct1());
         assertThat(testProduct).isPresent();
         assertThat(testProduct.get().getProductname()).isEqualTo("testproduct1");
@@ -42,10 +42,26 @@ class ProductRepositoryTest {
     }
 
     @Test
+    public void testThatLookingForNonExistingProductGivesEmptyResult() {
+        Optional<Product> testProduct = repository.findById(Long.MAX_VALUE);
+        assertThat(testProduct).isEmpty();
+    }
+
+    @Test
     public void testThatFindAllProductsOfGroupnameReturnsProducts() {
         List<Product> products = repository.findAllProductsOfGroupname("testgroup1");
         assertThat(products).hasSize(1);
-        assertThat(products).containsExactly(repository.findById(idOfTestProduct1()).get());
+        Product expectedProduct = repository.findById(idOfTestProduct1())
+                .orElseThrow(() -> new AssertionError("Expected product with id " + idOfTestProduct1() + " not found"));
+        assertThat(products).containsExactly(expectedProduct);
+
+    }
+
+    @Test
+    public void testThatFindAllProductsOfNonExistingGroupnameReturnsEmptyList() {
+        List<Product> products = repository.findAllProductsOfGroupname("UnknownGroup");
+        assertThat(products).isEmpty();
+
     }
 
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-import{getElemById, setTextInElem, removeContent, showElem} from "./utils.js";
+import {getElemById, setTextInElem, removeContent, showElem} from "./utils.js";
 
 let shopcart = {};
 if (sessionStorage.getItem("shopcart"))

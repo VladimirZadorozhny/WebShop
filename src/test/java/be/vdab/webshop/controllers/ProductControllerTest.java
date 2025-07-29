@@ -25,7 +25,6 @@ class ProductControllerTest {
 
     public ProductControllerTest(MockMvcTester mockMvc, JdbcClient jdbcClient) {
         this.mockMvc = mockMvc;
-
         this.jdbcClient = jdbcClient;
     }
 
@@ -42,7 +41,6 @@ class ProductControllerTest {
 
     @Test
     public void testThatGetProductByIdOfExistingProductReturnsCode200() {
-
         var response = mockMvc.get().uri("/products/{id}", idOfTestProduct1());
         assertThat(response).hasStatusOk();
     }

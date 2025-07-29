@@ -11,6 +11,6 @@ import java.security.Principal;
 public class PrincipalController {
     @GetMapping
     String findPrincipal(Principal principal) {
-        return principal == null ? "Unknown user " : principal.getName();
+        return principal == null ? "Unregistered user" : principal.getName();
     }
 }

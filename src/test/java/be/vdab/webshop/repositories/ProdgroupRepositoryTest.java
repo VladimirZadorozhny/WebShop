@@ -33,7 +33,7 @@ class ProdgroupRepositoryTest {
     }
 
     @Test
-    public void testThatFindGroupByIdExistingGroupReturnsGroup() {
+    public void testThatFindGroupByIdOfExistingGroupReturnsGroup() {
         var group = repository.findById(idOfTestProdgroup1());
         assertThat(group).isNotNull();
         assertThat(group).isNotEmpty();
@@ -41,8 +41,8 @@ class ProdgroupRepositoryTest {
     }
 
     @Test
-    public void testThatFindGroupByIdNonExistingGroupReturnsNull() {
-        final var group = repository.findById(Long.MAX_VALUE);
+    public void testThatFindGroupByIdOfNonExistingGroupReturnsNull() {
+        var group = repository.findById(Long.MAX_VALUE);
         assertThat(group).isEmpty();
     }
 
