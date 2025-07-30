@@ -1,9 +1,11 @@
 package be.vdab.webshop.domain.entities;
 
+import be.vdab.webshop.exceptions.SaleHasAlreadyThisSaleItemException;
+import be.vdab.webshop.exceptions.UserHasAlreadyThisProductInWishlist;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
@@ -22,6 +24,16 @@ public class Product {
     @JoinColumn(name = "groupId")
     private Prodgroup prodgroup;
 
+    @ManyToMany
+    @JoinTable(
+            name = "wishlists",
+            joinColumns = @JoinColumn(name = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
+    private Set<User> users;
+
+    @OneToMany(mappedBy = "product")
+    private Set<SaleItem> saleItems;
+
 
     public Product(String barcode, String productname, int stock, BigDecimal price,  Prodgroup prodgroup) {
         this.barcode = barcode;
@@ -29,6 +41,32 @@ public class Product {
         this.stock = stock;
         this.price = price;
         this.prodgroup = prodgroup;
+        this.users = new LinkedHashSet<>();
+        this.saleItems = new LinkedHashSet<>();
+    }
+
+    void addSaleItem(SaleItem saleItem) {
+        if (!saleItems.add(saleItem)) {
+            throw new SaleHasAlreadyThisSaleItemException();
+        }
+    }
+
+    public Set<SaleItem> getSaleItems() {
+        return Collections.unmodifiableSet(saleItems);
+    }
+
+    void addUser(User user) {
+        if (!users.add(user)) {
+            throw new UserHasAlreadyThisProductInWishlist();
+        }
+    }
+
+    void removeUser(User user) {
+        users.remove(user);
+    }
+
+    Set<User> getUsers() {
+        return Collections.unmodifiableSet(users);
     }
 
     protected Product() {}

@@ -35,7 +35,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(withDefaults());
         http.authorizeHttpRequests(req ->
-                req.requestMatchers("/css/**", "/js/**", "/images/**", "/", "/index.html", "/product.html", "shopcart.html").permitAll()
+                req.requestMatchers("/css/**", "/js/**", "/images/**", "/", "/index.html", "/product.html", "/shopcart.html").permitAll()
                         .requestMatchers("/principal/**", "/prodgroups/**", "/products/**").permitAll()
                         .requestMatchers("/login.html")
                         .hasAuthority("admin")
