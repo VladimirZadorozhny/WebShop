@@ -21,7 +21,7 @@ public class User {
 
     @ElementCollection
     @CollectionTable(name = "authorities",
-    joinColumns = @JoinColumn(name = "username"))
+    joinColumns = @JoinColumn(name = "username", referencedColumnName = "email"))
     @Column(name = "authority")
     private Set<String> authorities;
 
@@ -46,37 +46,37 @@ public class User {
         this.sales = new LinkedHashSet<>();
     }
 
-    void addSale(Sale sale) {
+    public void addSale(Sale sale) {
         if (!sales.add(sale)) {
             throw new UserHasAlreadyThisSale();
         }
     }
 
-    Set<Sale> getSales() {
+    public Set<Sale> getSales() {
         return Collections.unmodifiableSet(sales);
     }
 
-    void addProduct(Product product) {
+    public void addProduct(Product product) {
         if (!products.add(product)) {
             throw new UserHasAlreadyThisAuthorityException();
         }
     }
 
-    void removeProduct(Product product) {
+    public void removeProduct(Product product) {
         products.remove(product);
     }
 
-    Set<Product> getProducts() {
+    public Set<Product> getProducts() {
         return Collections.unmodifiableSet(products);
     }
 
-    void addAuthority(String authority) {
+    public void addAuthority(String authority) {
         if (!authorities.add(authority)) {
             throw new UserHasAlreadyThisAuthorityException();
         }
     }
 
-    void removeAuthority(String authority) {
+    public void removeAuthority(String authority) {
         authorities.remove(authority);
     }
 

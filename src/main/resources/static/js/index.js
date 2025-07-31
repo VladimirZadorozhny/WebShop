@@ -6,12 +6,12 @@ const response = await fetch("principal");
 if (response.ok) {
     const userName = await response.text();
     document.getElementById("userInfo").innerText = userName;
+    if (userName !== "Unregistered user")
+        sessionStorage.setItem("user", userName);
+    else
+        sessionStorage.removeItem("user");
 } else {
     alert(response.text);
-}
-
-document.getElementById("loginButton").onclick = () => {
-    window.location.href = "login.html";
 }
 
 const responseProdgroup = await fetch("prodgroups");
@@ -63,3 +63,5 @@ async function showProducts(groupId, groupName) {
         alert(response.text);
     }
 }
+
+getElemById("loginButton").onclick = () => window.location.href = "account.html";
