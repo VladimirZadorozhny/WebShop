@@ -1,18 +1,10 @@
 "use strict";
 
-import{getElemById, setTextInElem, removeContent, showElem} from "./utils.js";
+import {getElemById, removeContent, showElem, getPrincipal} from "./utils.js";
 
-const response = await fetch("principal");
-if (response.ok) {
-    const userName = await response.text();
-    document.getElementById("userInfo").innerText = userName;
-    if (userName !== "Unregistered user")
-        sessionStorage.setItem("user", userName);
-    else
-        sessionStorage.removeItem("user");
-} else {
-    alert(response.text);
-}
+const userName = await getPrincipal();
+getElemById("userInfo").innerText = userName;
+
 
 const responseProdgroup = await fetch("prodgroups");
 if (responseProdgroup.ok) {

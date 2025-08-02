@@ -19,3 +19,18 @@ export function hideElem(id) {
 export function removeContent(element) {
     element.innerHTML = "";
 }
+
+export async function getPrincipal() {
+    if (sessionStorage.getItem("user"))
+        return sessionStorage.getItem("user");
+
+    const response = await fetch("principal");
+    if (response.ok) {
+        const user = await response.text();
+        sessionStorage.setItem("user", user);
+        return user;
+    } else {
+        alert(response.text);
+        return null;
+    }
+}

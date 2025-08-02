@@ -1,6 +1,7 @@
 package be.vdab.webshop.domain.entities;
 
 import be.vdab.webshop.exceptions.SaleHasAlreadyThisSaleItemException;
+import be.vdab.webshop.exceptions.UserHasAlreadyThisProductInShopcart;
 import be.vdab.webshop.exceptions.UserHasAlreadyThisProductInWishlist;
 import jakarta.persistence.*;
 
@@ -24,12 +25,11 @@ public class Product {
     @JoinColumn(name = "groupId")
     private Prodgroup prodgroup;
 
-    @ManyToMany
-    @JoinTable(
-            name = "wishlists",
-            joinColumns = @JoinColumn(name = "productId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
-    private Set<User> users;
+    @ManyToMany(mappedBy = "wishlistProducts")
+    private Set<User> wishlistUsers;
+
+    @ManyToMany (mappedBy = "shopcartProducts")
+    private Set<User> shopcartUsers;
 
     @OneToMany(mappedBy = "product")
     private Set<SaleItem> saleItems;
@@ -41,8 +41,9 @@ public class Product {
         this.stock = stock;
         this.price = price;
         this.prodgroup = prodgroup;
-        this.users = new LinkedHashSet<>();
+        this.wishlistUsers = new LinkedHashSet<>();
         this.saleItems = new LinkedHashSet<>();
+        this.shopcartUsers = new LinkedHashSet<>();
     }
 
     void addSaleItem(SaleItem saleItem) {
@@ -55,18 +56,32 @@ public class Product {
         return Collections.unmodifiableSet(saleItems);
     }
 
-    void addUser(User user) {
-        if (!users.add(user)) {
+    void addWishlistUser(User user) {
+        if (!wishlistUsers.add(user)) {
             throw new UserHasAlreadyThisProductInWishlist();
         }
     }
 
-    void removeUser(User user) {
-        users.remove(user);
+    void removeWishlistUser(User user) {
+        wishlistUsers.remove(user);
     }
 
-    Set<User> getUsers() {
-        return Collections.unmodifiableSet(users);
+    Set<User> getWishlistUsers() {
+        return Collections.unmodifiableSet(wishlistUsers);
+    }
+
+    void addShopcartUser(User user) {
+        if (!shopcartUsers.add(user)) {
+            throw new UserHasAlreadyThisProductInShopcart();
+        }
+    }
+
+    void removeShopcartUser(User user) {
+        shopcartUsers.remove(user);
+    }
+
+    Set<User> getShopcartUsers() {
+        return Collections.unmodifiableSet(shopcartUsers);
     }
 
     protected Product() {}

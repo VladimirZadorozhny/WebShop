@@ -1,6 +1,8 @@
 package be.vdab.webshop.domain.entities;
 
 import be.vdab.webshop.exceptions.UserHasAlreadyThisAuthorityException;
+import be.vdab.webshop.exceptions.UserHasAlreadyThisProductInShopcart;
+import be.vdab.webshop.exceptions.UserHasAlreadyThisProductInWishlist;
 import be.vdab.webshop.exceptions.UserHasAlreadyThisSale;
 import jakarta.persistence.*;
 
@@ -25,9 +27,19 @@ public class User {
     @Column(name = "authority")
     private Set<String> authorities;
 
-    @ManyToMany(mappedBy = "users")
-    @OrderBy("id")
-    private Set<Product> products;
+    @ManyToMany
+    @JoinTable(
+            name = "wishlists",
+            joinColumns = @JoinColumn(name = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
+    private Set<Product> wishlistProducts;
+
+    @ManyToMany
+    @JoinTable(
+            name = "shopcarts",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "productId"))
+    private Set<Product> shopcartProducts;
 
     @OneToMany (mappedBy = "user")
     @OrderBy("saletime")
@@ -42,8 +54,9 @@ public class User {
         this.password = password;
         this.enabled = enabled;
         this.authorities = new LinkedHashSet<>();
-        this.products = new LinkedHashSet<>();
+        this.wishlistProducts = new LinkedHashSet<>();
         this.sales = new LinkedHashSet<>();
+        this.shopcartProducts = new LinkedHashSet<>();
     }
 
     public void addSale(Sale sale) {
@@ -56,18 +69,40 @@ public class User {
         return Collections.unmodifiableSet(sales);
     }
 
-    public void addProduct(Product product) {
-        if (!products.add(product)) {
-            throw new UserHasAlreadyThisAuthorityException();
+    public void addWishlistProduct(Product product) {
+        if (!wishlistProducts.add(product)) {
+            throw new UserHasAlreadyThisProductInWishlist();
         }
     }
 
-    public void removeProduct(Product product) {
-        products.remove(product);
+    public void removeWishlistProduct(Product product) {
+        wishlistProducts.remove(product);
     }
 
-    public Set<Product> getProducts() {
-        return Collections.unmodifiableSet(products);
+    public Set<Product> getWishlistProducts() {
+        return Collections.unmodifiableSet(wishlistProducts);
+    }
+
+    public void addShopcartProduct(Product product) {
+        if (!shopcartProducts.add(product)) {
+            throw new UserHasAlreadyThisProductInShopcart();
+        }
+    }
+
+    public void updateShopcartProducts(Set<Product> newProducts) {
+
+        shopcartProducts.removeIf(product -> !newProducts.contains(product));
+        shopcartProducts.addAll(newProducts);
+//        newProducts.forEach(this::addShopcartProduct);
+//        shopcartProducts.addAll(newProducts);
+    }
+
+    public void removeShopcartProduct(Product product) {
+        shopcartProducts.remove(product);
+    }
+
+    public Set<Product> getShopcartProducts() {
+        return Collections.unmodifiableSet(shopcartProducts);
     }
 
     public void addAuthority(String authority) {

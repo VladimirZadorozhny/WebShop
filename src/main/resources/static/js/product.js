@@ -1,10 +1,15 @@
 "use strict";
 
-import {getElemById, setTextInElem, removeContent, showElem} from "./utils.js";
+import {getElemById, setTextInElem, removeContent, showElem, getPrincipal} from "./utils.js";
+
+const user = await getPrincipal();
+getElemById("userInfo").innerText = user;
 
 let shopcart = {};
 if (sessionStorage.getItem("shopcart"))
     shopcart = JSON.parse(sessionStorage.getItem("shopcart"));
+if (!shopcart[user])
+    shopcart[user] = {};
 
 const productInfo = JSON.parse(sessionStorage.getItem("productInfo"));
 
@@ -24,27 +29,25 @@ const response  = await fetch(`products/${productInfo.productId}`);
         setTextInElem("barcode", product.barcode);
         const key = String(product.id);
         if (product.available) {
-            if (shopcart[key]) {
+            if (shopcart[user][key]) {
                 getElemById("shopcart").disabled = true;
             }
         } else {
             getElemById("wishlist").disabled = false;
             getElemById("shopcart").disabled = true;
-            if (shopcart[key]) {
-                delete shopcart[key];
+            if (shopcart[user][key]) {
+                delete shopcart[user][key];
                 sessionStorage.setItem("shopcart", JSON.stringify(shopcart));
             }
         }
 
         getElemById("shopcart").onclick = (event) => {
-            if (!shopcart[key]) {
-                shopcart[key] = product;
+            if (!shopcart[user][key]) {
+                shopcart[user][key] = product;
                 sessionStorage.setItem("shopcart", JSON.stringify(shopcart));
                 event.target.disabled = true;
             }
         }
-
-
 
 
     } else {
@@ -54,4 +57,6 @@ const response  = await fetch(`products/${productInfo.productId}`);
 } else {
     alert("No products have been saved!");
 }
+
+getElemById("loginButton").onclick = () => window.location.href = "account.html";
 
